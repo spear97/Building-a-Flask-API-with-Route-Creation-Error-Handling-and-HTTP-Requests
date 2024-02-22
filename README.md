@@ -1,4 +1,4 @@
-# Building-a-Flask-API-with-Route-Creation-Error-Handling-and-HTTP-Requests
+# Building a Flask API with Route Creation Error Handling and HTTP Requests
 
 This Flask application serves as an API for managing a list of people's data. It includes endpoints for retrieving, adding, and deleting data, as well as searching for specific individuals by name.
 
