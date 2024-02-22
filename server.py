@@ -1,6 +1,8 @@
 from flask import Flask, make_response, request
+
 app = Flask(__name__)
 
+# Sample data for the API
 data = [
     {
         "id": "3b58aade-8415-49dd-88db-8d7bce14932a",
@@ -59,31 +61,24 @@ data = [
     }
 ]
 
+# Home route
 @app.route("/")
 def index():
     return "hello world"
 
+# Route for returning no content with a status of 204
 @app.route("/no_content")
 def no_content():
-    """return 'no content found' with a status of 204
+    return ({"message": "No content found"}, 204)
 
-    Returns:
-        string: no content found with 204 status code
-    """
-    return ({"message":"No content found"}, 204)
-
+# Route for returning 'Hello World' message with a status code of 200
 @app.route("/exp")
 def index_explicit():
-    """return 'Hello World' message with a status code of 200
-
-    Returns:
-        string: Hello World
-        status code: 200
-    """
-    resp = make_response({"message":"Hello World"})
+    resp = make_response({"message": "Hello World"})
     resp.status_code = 200
     return resp
 
+# Route for checking if data exists
 @app.route("/data")
 def get_data():
     try:
@@ -94,15 +89,9 @@ def get_data():
     except NameError:
         return {"message": "Data not found"}, 404
 
+# Route for searching a person by name
 @app.route("/name_search")
 def name_search():
-    """find a person in the database
-
-    Returns:
-        json: person if found, with status of 200
-        404: if not found
-        422: if argument q is missing
-    """
     query = request.args.get("q")
 
     if not query:
@@ -114,6 +103,7 @@ def name_search():
 
     return ({"message": "Person not found"}, 404)
 
+# Route for getting the count of data
 @app.route("/count")
 def count():
     try:
@@ -121,6 +111,7 @@ def count():
     except NameError:
         return {"message": "data not defined"}, 500
 
+# Route for finding a person by UUID
 @app.route("/person/<uuid:id>")
 def find_by_uuid(id):
     for person in data:
@@ -128,14 +119,16 @@ def find_by_uuid(id):
             return person
     return {"message": "person not found"}, 404
 
+# Route for deleting a person by UUID
 @app.route("/person/<uuid:id>", methods=['DELETE'])
 def delete_by_uuid(id):
     for person in data:
         if person["id"] == str(id):
             data.remove(person)
-            return {"message":f"{id}"}, 200
+            return {"message": f"{id}"}, 200
     return {"message": "person not found"}, 404
 
+# Route for adding a new person
 @app.route("/person", methods=['POST'])
 def add_by_uuid():
     new_person = request.json
@@ -149,6 +142,7 @@ def add_by_uuid():
 
     return {"message": f"{new_person['id']}"}, 200
 
+# Custom error handler for 404 not found
 @app.errorhandler(404)
 def api_not_found(error):
     return {"message": "API not found"}, 404
